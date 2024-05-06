@@ -1,5 +1,5 @@
-import { memo, useEffect, useState } from 'react';import Box from '@mui/material/Box';
-import { Tab, Tabs } from '@mui/material';
+import { memo, use, useEffect, useState } from 'react';import Box from '@mui/material/Box';
+import { Tab, Tabs, TextField, Grid } from '@mui/material';
 import moment from 'moment';
 import { useCoingecko } from '@/function/useCoingecko';
 import { CoinData } from '@/types/Crypto';
@@ -14,6 +14,8 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
   const { getPriceRange } = useCoingecko();
   const { showMessage } = useNotification();
   const [value, setValue] = useState<string>('1D');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [coinData, setCoinData] = useState<CoinData>({
     prices: [],
     market_caps: [],
@@ -33,9 +35,7 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
       showMessage(error.message + ' Many too request, please try again later!');
     }
   };
-  useEffect(() => {
-    fetchGetPriceRange(0, 0);
-  }, [coinId]);
+
   const handleChange = (event: React.SyntheticEvent, value: string) => {
     switch (value) {
       case '1D':
@@ -68,12 +68,39 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
         setValue(value);
         break;
     }
+    if (value) {
+      setStartDate(null);
+      setEndDate(null);
+    }
   };
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+    setValue('')
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+    setValue('')
+  };
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchGetPriceRange(
+        moment(startDate).unix(),
+        moment(endDate).unix()
+      );
+    }
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    fetchGetPriceRange(0, 0);
+  }, [coinId]);
   return (
     <Box>
       <Box
         sx={{
           mt: 2,
+          mb: 2,
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           alignItems: { md: 'center' },
@@ -106,6 +133,32 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
             <Tab label='3M' value='3M' />
             <Tab label='1Y' value='1Y' />
           </Tabs>
+        </Box>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item>
+              <TextField
+                label='Start Date'
+                type='date'
+                value={startDate}
+                onChange={(e) => handleStartDateChange(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                label='End Date'
+                type='date'
+                value={endDate}
+                onChange={(e) => handleEndDateChange(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Box>
       <Box>

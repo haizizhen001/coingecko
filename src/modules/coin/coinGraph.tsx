@@ -1,7 +1,6 @@
-import { CoinData } from '@/types/Crypto';
-import { Box, Card, CardContent, CardHeader, Grid } from '@mui/material';
+import { CoinData } from '@/types/Crypto';import { Box, Card, CardContent, CardHeader, Grid } from '@mui/material';
 import moment from 'moment';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import {
   Area,
   AreaChart,
@@ -45,8 +44,9 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
       if (price[1] > yMax) yMax = price[1];
       if (price[1] < yMin) yMin = price[1];
       let time = moment(price[0]).format('HH:mm');
-      if (moment(price[0]).day() < moment().day())
+      if (moment(price[0]).add(1, 'day') < moment())
         time = moment(price[0]).format('MMMM DD HH:mm');
+      
       return {
         time: time,
         amount: price[1],
@@ -74,7 +74,12 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
             tickLine={false}
             axisLine={false}
             tickCount={6}
+            type='number'
             domain={['dataMin', 'dataMax']}
+            tickFormatter={(tick: number) => {
+              if(tick > 1000) return `${(tick / 1000).toFixed(1)}K`;
+              return tick;
+            }}
           />
           <CartesianGrid
             strokeDasharray='2 10'
@@ -94,7 +99,7 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
         </AreaChart>
       </ResponsiveContainer>
       <hr />
-      <Box margin="20px 0">
+      <Box margin='20px 0'>
         <b>OHLC Statistics: </b>
       </Box>
       <Box>
@@ -106,7 +111,8 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
             <b>High:</b> {value.yMax} USD
           </Grid>
           <Grid item xs={6}>
-            <b>Close:</b> {value.arrayData[value.arrayData.length - 1]?.amount} USD
+            <b>Close:</b> {value.arrayData[value.arrayData.length - 1]?.amount}{' '}
+            USD
           </Grid>
           <Grid item xs={6}>
             <b>Low:</b> {value.yMin} USD
@@ -117,4 +123,4 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
   );
 };
 
-export default BitcoinGraph;
+export default memo(BitcoinGraph);
