@@ -1,13 +1,14 @@
 import { CoinType } from '@/types/Crypto';
 import axios from 'axios';
 export const useCoingecko = () => {
+  const API = process.env.NEXT_PUBLIC_ORDER_API_URL || 'https://api.coingecko.com/api/v3';
   const getCoinList = async () => {
     const cachedData = getWithExpiry('coinList');
     if (cachedData) {
       return cachedData as CoinType[];
     }
     const response = await axios.get(
-      'https://api.coingecko.com/api/v3/coins/list'
+      `${API}/coins/list`
     );
     setWithExpiry('coinList', response.data, 24 * 60 * 60 * 1000);
     return response.data as CoinType[];
@@ -18,7 +19,7 @@ export const useCoingecko = () => {
       return cachedData as CoinType[];
     }
     const response = await axios.get(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&price_change_percentage=24h&locale=en'
+      `${API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&price_change_percentage=24h&locale=en`
     );
     setWithExpiry('coinTrend', response.data, 60 * 1000);
     return response.data as CoinType[];
@@ -26,7 +27,7 @@ export const useCoingecko = () => {
   const getPriceRange = async (symbol: string, from: number, to: number) => {
     try {
       const response = await axios.get(
-        `https://api.coingecko.com/api/v3/coins/${symbol}/market_chart/range`,
+        `${API}/coins/${symbol}/market_chart/range`,
         {
           params: {
             vs_currency: 'usd',

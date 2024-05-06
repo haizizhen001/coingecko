@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "runScript": "yarn install && ts-node script/calculateMaxProfit.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
@@ -18,7 +19,8 @@
     "react-dom": "^18",
     "recharts": "^2.0.9",
     "axios": "^0.24.0",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "ts-node": "^10.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",

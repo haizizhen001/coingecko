@@ -74,12 +74,12 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
     }
   };
 
-  const handleStartDateChange = (date) => {
+  const handleStartDateChange = (date : any) => {
     setStartDate(date);
     setValue('')
   };
 
-  const handleEndDateChange = (date) => {
+  const handleEndDateChange = (date : any) => {
     setEndDate(date);
     setValue('')
   };
@@ -141,7 +141,7 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
                 label='Start Date'
                 type='date'
                 value={startDate}
-                onChange={(e) => handleStartDateChange(e.target.value)}
+                onChange={(e :any) => handleStartDateChange(e.target.value)}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -152,7 +152,7 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
                 label='End Date'
                 type='date'
                 value={endDate}
-                onChange={(e) => handleEndDateChange(e.target.value)}
+                onChange={(e : any) => handleEndDateChange(e.target.value)}
                 InputLabelProps={{
                   shrink: true,
                 }}

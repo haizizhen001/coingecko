@@ -78,7 +78,7 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
             domain={['dataMin', 'dataMax']}
             tickFormatter={(tick: number) => {
               if(tick > 1000) return `${(tick / 1000).toFixed(1)}K`;
-              return tick;
+              return tick.toString();
             }}
           />
           <CartesianGrid
