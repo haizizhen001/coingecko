@@ -27,13 +27,13 @@ yarn install
 ```bash
 yarn build
 ```
-``bash
+```bash
 yarn start
 ```
 
-## Question No.2
+### Question No.2
 ```bash
 yarn runScript
 ```
 
-Script handle calculateMaxProfit path: script\calculateMaxProfit.ts
+Script handle calculateMaxProfit path: [script\calculateMaxProfit.ts](https://github.com/haizizhen001/haile-20240505/blob/main/script/calculateMaxProfit.ts)
