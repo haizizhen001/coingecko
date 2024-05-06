@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useCoingecko } from '@/function/useCoingecko';
 import { CoinData } from '@/types/Crypto';
 import BitcoinGraph from './coinGraph';
+import { useNotification } from '@/function/useNotication';
 
 interface ICoinChartProps {
   coinId: string;
@@ -11,32 +12,62 @@ interface ICoinChartProps {
 
 const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
   const { getPriceRange } = useCoingecko();
+  const { showMessage } = useNotification();
+  const [value, setValue] = useState<string>('1D');
   const [coinData, setCoinData] = useState<CoinData>({
     prices: [],
     market_caps: [],
     total_volumes: [],
   });
-  const fetchGetPriceRange = async () => {
+  const fetchGetPriceRange = async (from?: number, to?: number) => {
     try {
-      const response = await getPriceRange(
-        coinId,
-        moment().subtract(2, 'day').unix(),
-        moment().unix()
-      );
+      const dateFrom = from ? from : moment().subtract(1, 'day').unix();
+      const dateTo = to ? to : moment().unix();
+      const response = await getPriceRange(coinId, dateFrom, dateTo);
       if (response.prices.length > 0) {
         setCoinData(response);
       } else {
-        console.log('No data found');
+        showMessage('No data found');
       }
-    } catch (error) {
-      console.log('error', error);
+    } catch (error: any) {
+      showMessage(error.message + ' Many too request, please try again later!');
     }
   };
   useEffect(() => {
-    fetchGetPriceRange();
+    fetchGetPriceRange(0, 0);
   }, [coinId]);
-  const handleChange = (event: React.SyntheticEvent, value: number) => {
-    console.log(value);
+  const handleChange = (event: React.SyntheticEvent, value: string) => {
+    switch (value) {
+      case '1D':
+        fetchGetPriceRange();
+        setValue(value);
+        break;
+      case '7D':
+        fetchGetPriceRange(moment().subtract(7, 'day').unix(), moment().unix());
+        setValue(value);
+        break;
+      case '1M':
+        fetchGetPriceRange(
+          moment().subtract(1, 'month').unix(),
+          moment().unix()
+        );
+        setValue(value);
+        break;
+      case '3M':
+        fetchGetPriceRange(
+          moment().subtract(3, 'month').unix(),
+          moment().unix()
+        );
+        setValue(value);
+        break;
+      case '1Y':
+        fetchGetPriceRange(
+          moment().subtract(1, 'year').unix(),
+          moment().unix()
+        );
+        setValue(value);
+        break;
+    }
   };
   return (
     <Box>
@@ -64,20 +95,21 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
                 minWidth: 10,
               },
             }}
-            value={0}
+            value={value}
             onChange={handleChange}
             indicatorColor='primary'
             textColor='primary'
           >
-            <Tab className='muiTab' label={'Yearly'} />
-            <Tab className='muiTab' label={'Monthly'} />
-            <Tab className='muiTab' label={'Weekly'} />
-            <Tab className='muiTab' label={'Daily'} />
+            <Tab label='24H' value='1D' />
+            <Tab label='7D' value='7D' />
+            <Tab label='1M' value='1M' />
+            <Tab label='3M' value='3M' />
+            <Tab label='1Y' value='1Y' />
           </Tabs>
         </Box>
       </Box>
       <Box>
-        <BitcoinGraph data={coinData} />
+        {coinData.prices.length > 0 && <BitcoinGraph data={coinData} />}
       </Box>
     </Box>
   );

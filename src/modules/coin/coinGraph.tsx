@@ -1,6 +1,7 @@
 import { CoinData } from '@/types/Crypto';
+import { Box, Card, CardContent, CardHeader, Grid } from '@mui/material';
 import moment from 'moment';
-import React, { use, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Area,
   AreaChart,
@@ -10,25 +11,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-
-const onGetDataKey = (value: any) => {
-  switch (value) {
-    case 0:
-      return 'month';
-
-    case 1:
-      return 'date';
-
-    case 2:
-      return 'day';
-
-    case 3:
-      return 'time';
-
-    default:
-      return 'month';
-  }
-};
 
 interface IBitcoinGraphProps {
   data: CoinData;
@@ -63,7 +45,8 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
       if (price[1] > yMax) yMax = price[1];
       if (price[1] < yMin) yMin = price[1];
       let time = moment(price[0]).format('HH:mm');
-      if(moment(price[0]).day() < moment().day()) time = moment(price[0]).format('MMMM DD HH:mm');
+      if (moment(price[0]).day() < moment().day())
+        time = moment(price[0]).format('MMMM DD HH:mm');
       return {
         time: time,
         amount: price[1],
@@ -75,41 +58,62 @@ const BitcoinGraph: React.FC<IBitcoinGraphProps> = ({ data }) => {
     convertData(data);
   }, [data]);
   return (
-    <ResponsiveContainer width='100%' height={500}>
-      <AreaChart data={value.arrayData}>
-        <XAxis
-          dataKey={'time'}
-          axisLine={false}
-          padding={{ left: 20, right: 20 }}
-          domain={[value.xMin, value.xMax]}
-          minTickGap= {120}
-        />
-        <Tooltip labelStyle={{ color: 'black' }} />
-        <YAxis
-          dataKey='amount'
-          tickLine={false}
-          axisLine={false}
-          type='number'
-          tickCount={6}
-          domain={['dataMin', 'dataMax']}
-        />
-        <CartesianGrid
-          strokeDasharray='2 10'
-          stroke='#E53E3E'
-          vertical={false}
-        />
-       
-        <Area
-          type='monotone'
-          dataKey='amount'
-          strokeWidth={1}
-          stackId='2'
-          stroke='#E53E3E'
-          fill='url(#color15)'
-          fillOpacity={1}
-        ></Area>
-      </AreaChart>
-    </ResponsiveContainer>
+    <Box>
+      <ResponsiveContainer width='100%' height={500}>
+        <AreaChart data={value.arrayData}>
+          <XAxis
+            dataKey={'time'}
+            axisLine={false}
+            padding={{ left: 20, right: 20 }}
+            domain={[value.xMin, value.xMax]}
+            minTickGap={120}
+          />
+          <Tooltip labelStyle={{ color: 'black' }} />
+          <YAxis
+            dataKey='amount'
+            tickLine={false}
+            axisLine={false}
+            tickCount={6}
+            domain={['dataMin', 'dataMax']}
+          />
+          <CartesianGrid
+            strokeDasharray='2 10'
+            stroke='#E53E3E'
+            vertical={false}
+          />
+
+          <Area
+            type='monotone'
+            dataKey='amount'
+            strokeWidth={1}
+            stackId='2'
+            stroke='#E53E3E'
+            fill='url(#color15)'
+            fillOpacity={1}
+          ></Area>
+        </AreaChart>
+      </ResponsiveContainer>
+      <hr />
+      <Box margin="20px 0">
+        <b>OHLC Statistics: </b>
+      </Box>
+      <Box>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={6}>
+            <b>Open:</b> {value.arrayData[0]?.amount} USD
+          </Grid>
+          <Grid item xs={6}>
+            <b>High:</b> {value.yMax} USD
+          </Grid>
+          <Grid item xs={6}>
+            <b>Close:</b> {value.arrayData[value.arrayData.length - 1]?.amount} USD
+          </Grid>
+          <Grid item xs={6}>
+            <b>Low:</b> {value.yMin} USD
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 };
 

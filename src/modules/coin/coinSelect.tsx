@@ -1,26 +1,29 @@
-import React, { memo, useEffect, useState } from 'react';import Box from '@mui/material/Box';
+import React, { memo, useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
 import { Autocomplete, Snackbar, TextField } from '@mui/material';
 import { useCoingecko } from '@/function/useCoingecko';
 import { CoinType } from '@/types/Crypto';
+import { useNotification } from '@/function/useNotication';
 
 interface ICountrySelectProps {
-  coinId: string;
-  setCoinSelect: any;
+  coinId?: string;
+  setCoinSelect?: any;
 }
 const CoinSelector = ({ coinId, setCoinSelect }: ICountrySelectProps) => {
   const [inputValue, setInputValue] = useState('');
   const { getCoinList, getCoinTrend } = useCoingecko();
   const [coinData, setCoinData] = useState<CoinType[]>([]);
   const [coinTrend, selectCoinTrend] = useState<CoinType[]>([]);
+  const { showMessage } = useNotification();
   const fetchDataCoinList = async () => {
     try {
       const response = await getCoinList();
       if (response.length > 0) setCoinData(response);
       else {
-        console.log('No data found');
+        showMessage('No data found');
       }
-    } catch (error) {
-      console.log('error', error);
+    } catch (error: any) {
+      showMessage(error.message + ' Many too request, please try again later!');
     }
   };
   const fetchDataCoinTrend = async () => {
@@ -28,10 +31,10 @@ const CoinSelector = ({ coinId, setCoinSelect }: ICountrySelectProps) => {
       const response = await getCoinTrend();
       if (response.length > 0) selectCoinTrend(response);
       else {
-        console.log('No data found');
+        showMessage('No data found');
       }
-    } catch (error) {
-      console.log('error', error);
+    } catch (error: any) {
+      showMessage(error.message + ' Many too request, please try again later!');
     }
   };
 
@@ -58,7 +61,7 @@ const CoinSelector = ({ coinId, setCoinSelect }: ICountrySelectProps) => {
       autoHighlight
       getOptionLabel={(option) => option.name || option.symbol}
       onChange={(event, value) => {
-        setCoinSelect(value);
+        if (value) setCoinSelect(value.id);
       }}
       onInputChange={(event, value) => {
         setInputValue(value ? value : '');

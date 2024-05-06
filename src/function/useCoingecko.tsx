@@ -1,4 +1,5 @@
-import { CoinType } from '@/types/Crypto';import axios from 'axios';
+import { CoinType } from '@/types/Crypto';
+import axios from 'axios';
 export const useCoingecko = () => {
   const getCoinList = async () => {
     const cachedData = getWithExpiry('coinList');
@@ -22,22 +23,26 @@ export const useCoingecko = () => {
     setWithExpiry('coinTrend', response.data, 60 * 1000);
     return response.data as CoinType[];
   };
-  const getPriceRange = async (symbol:string, from: number, to: number) => {
-    const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${symbol}/market_chart/range`,
-      {
-        params: {
-          vs_currency: 'usd',
-          from: from,
-          to: to,
-          precision: 2
-        },
-      }
-    );
+  const getPriceRange = async (symbol: string, from: number, to: number) => {
+    try {
+      const response = await axios.get(
+        `https://api.coingecko.com/api/v3/coins/${symbol}/market_chart/range`,
+        {
+          params: {
+            vs_currency: 'usd',
+            from: from,
+            to: to,
+            precision: 2,
+          },
+        }
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   };
-  
+
   const setWithExpiry = (key: string, value: any, ttl: number) => {
     const now = new Date();
     const item = {
