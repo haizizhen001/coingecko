@@ -17,6 +17,7 @@ docker build -t fe-coin .
 docker run --publish 3000:3000 fe-coin
 ```
 FE: http://localhost:3000
+Demo Link : http://103.74.116.238:5000/crypto
 
 
 
