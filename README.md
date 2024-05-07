@@ -17,6 +17,7 @@ docker build -t fe-coin .
 docker run --publish 3000:3000 fe-coin
 ```
 FE: http://localhost:3000
+Demo Link : http://103.74.116.238:5000/crypto
 
 
 
@@ -27,13 +28,13 @@ yarn install
 ```bash
 yarn build
 ```
-``bash
+```bash
 yarn start
 ```
 
-## Question No.2
+### Question No.2
 ```bash
 yarn runScript
 ```
 
-Script handle calculateMaxProfit path: script\calculateMaxProfit.ts
+Script handle calculateMaxProfit path: [script\calculateMaxProfit.ts](https://github.com/haizizhen001/haile-20240505/blob/main/script/calculateMaxProfit.ts)
