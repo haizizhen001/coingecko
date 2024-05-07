@@ -94,6 +94,7 @@ const CoinChart: React.FC<ICoinChartProps> = ({ coinId }) => {
 
   useEffect(() => {
     fetchGetPriceRange(0, 0);
+    setValue('1D');
   }, [coinId]);
   return (
     <Box>
